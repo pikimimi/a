@@ -1,4 +1,3 @@
-
 const imageUpload = document.getElementById('imageUpload');
 const toggleButton = document.getElementById('toggleButton');
 const downloadButton = document.getElementById('downloadButton');
