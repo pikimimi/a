@@ -1,1 +1,137 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background: linear-gradient(135deg, #f6d5e5, #d4e5ff);
+    color: #5a5a5a;
+}
+.container {
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 100%;
+}
+h1 {
+    color: #7c5295;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
 
+/* Canvas Wrapper for capturing */
+#canvasWrapper {
+    display: inline-block;
+    position: relative;
+    border: 10px solid #b8a3c8;
+    border-radius: 50%;
+    overflow: hidden;
+    padding: 10px;
+}
+
+#imageContainer {
+    width: 300px;
+    height: 300px;
+    margin: 20px auto;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #b8a3c8;
+}
+
+#spinner {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+#uploadedImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+}
+
+#centerDot {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    background-color: #000000;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+
+.custom-file-upload, button {
+    background: linear-gradient(90deg, #a788c8, #b8a3c8, #a788c8);
+    background-size: 200% 100%;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 10px 0;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    animation: gradientShift 3s ease infinite;
+}
+
+.custom-file-upload:hover, button:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+button:disabled {
+    background: #d1c1e0;
+    cursor: not-allowed;
+}
+
+.control-group {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #7c5295;
+    font-weight: 600;
+}
+
+input[type="range"], input[type="color"] {
+    width: 100%;
+    max-width: 200px;
+    margin-bottom: 0.5rem;
+}
+
+input[type="color"] {
+    height: 40px;
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
