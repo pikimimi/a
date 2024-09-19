@@ -28,7 +28,7 @@ h1 {
     display: inline-block;
     position: relative;
     border: 10px solid #b8a3c8;
-    border-radius: 50%;
+    border-radius: 20px; /* Changed to square corners */
     overflow: hidden;
     padding: 10px;
 }
