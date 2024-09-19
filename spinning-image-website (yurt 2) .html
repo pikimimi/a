@@ -30,32 +30,44 @@
             font-weight: 600;
             margin-bottom: 1.5rem;
         }
+
+        /* Canvas Wrapper for capturing */
+        #canvasWrapper {
+            display: inline-block;
+            position: relative;
+            border: 10px solid #b8a3c8;
+            border-radius: 50%;
+            overflow: hidden;
+            padding: 10px;
+        }
+
         #imageContainer {
             width: 300px;
             height: 300px;
             margin: 20px auto;
             position: relative;
-            border: 10px solid #b8a3c8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             background-color: #b8a3c8;
         }
-        #maskContainer {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            overflow: hidden;
-            border-radius: 50%;
-        }
+
         #spinner {
             width: 100%;
             height: 100%;
-            position: relative;
-            display: none;
+            position: absolute;
+            border-radius: 50%;
+            overflow: hidden;
         }
+
         #uploadedImage {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            border-radius: 50%;
+            display: block;
         }
+
         #centerDot {
             position: absolute;
             top: 50%;
@@ -67,6 +79,7 @@
             transform: translate(-50%, -50%);
             z-index: 10;
         }
+
         .custom-file-upload, button {
             background: linear-gradient(90deg, #a788c8, #b8a3c8, #a788c8);
             background-size: 200% 100%;
@@ -82,41 +95,49 @@
             letter-spacing: 1px;
             animation: gradientShift 3s ease infinite;
         }
+
         .custom-file-upload:hover, button:hover {
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             transform: translateY(-2px);
         }
+
         button:disabled {
             background: #d1c1e0;
             cursor: not-allowed;
         }
+
         .control-group {
             margin-top: 1.5rem;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
+
         label {
             display: block;
             margin-bottom: 0.5rem;
             color: #7c5295;
             font-weight: 600;
         }
+
         input[type="range"], input[type="color"] {
             width: 100%;
             max-width: 200px;
             margin-bottom: 0.5rem;
         }
+
         input[type="color"] {
             height: 40px;
             border: none;
             border-radius: 20px;
             overflow: hidden;
         }
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
         @keyframes gradientShift {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -134,14 +155,17 @@
         <br>
         <button id="toggleButton" disabled>Start Spinning</button>
         <button id="downloadButton" disabled>Download Animation</button>
-        <div id="imageContainer">
-            <div id="maskContainer">
+
+        <!-- Canvas Wrapper for capturing -->
+        <div id="canvasWrapper">
+            <div id="imageContainer">
                 <div id="spinner">
                     <img id="uploadedImage" alt="Uploaded image">
                     <div id="centerDot"></div>
                 </div>
             </div>
         </div>
+
         <div class="control-group">
             <label for="speedControl">Spinning Speed:</label>
             <input type="range" id="speedControl" min="1" max="10" value="5">
@@ -220,52 +244,42 @@
         downloadButton.addEventListener('click', simulateDownload);
 
         speedControl.addEventListener('input', updateSpinAnimation);
-        borderColorControl.addEventListener('input', updateBorderColor);
-        borderWidthControl.addEventListener('input', updateBorderWidth);
-        centerDotSizeControl.addEventListener('input', updateCenterDot);
-        centerDotColorControl.addEventListener('input', updateCenterDot);
-        zoomControl.addEventListener('input', updateImageTransform);
-        horizontalPositionControl.addEventListener('input', updateImageTransform);
-        verticalPositionControl.addEventListener('input', updateImageTransform);
+        borderColorControl.addEventListener('input', updateStyles);
+        borderWidthControl.addEventListener('input', updateStyles);
+        centerDotSizeControl.addEventListener('input', updateStyles);
+        centerDotColorControl.addEventListener('input', updateStyles);
+        zoomControl.addEventListener('input', updateStyles);
+        horizontalPositionControl.addEventListener('input', updateStyles);
+        verticalPositionControl.addEventListener('input', updateStyles);
 
         function updateSpinAnimation() {
-            const duration = 11 - speedControl.value; // Invert scale so higher value = faster
-            spinner.style.animation = isSpinning ? `spin ${duration}s linear infinite` : 'none';
+            const speed = speedControl.value;
+            if (isSpinning) {
+                spinner.style.animation = `spin ${11 - speed}s linear infinite`;
+            } else {
+                spinner.style.animation = 'none';
+            }
         }
 
-        function updateBorderColor() {
-            const color = borderColorControl.value;
-            imageContainer.style.borderColor = color;
-            imageContainer.style.backgroundColor = color;
-        }
-
-        function updateBorderWidth() {
-            const width = borderWidthControl.value;
-            imageContainer.style.borderWidth = `${width}px`;
-        }
-
-        function updateCenterDot() {
-            const size = centerDotSizeControl.value;
-            const color = centerDotColorControl.value;
-            centerDot.style.width = `${size}px`;
-            centerDot.style.height = `${size}px`;
-            centerDot.style.backgroundColor = color;
-        }
-
-        function updateImageTransform() {
-            const zoom = zoomControl.value;
-            const horizontalPosition = horizontalPositionControl.value;
-            const verticalPosition = verticalPositionControl.value;
-            uploadedImage.style.transform = `scale(${zoom / 100}) translate(${horizontalPosition}px, ${verticalPosition}px)`;
+        function updateStyles() {
+            imageContainer.style.borderColor = borderColorControl.value;
+            imageContainer.style.borderWidth = `${borderWidthControl.value}px`;
+            centerDot.style.width = `${centerDotSizeControl.value}px`;
+            centerDot.style.height = `${centerDotSizeControl.value}px`;
+            centerDot.style.backgroundColor = centerDotColorControl.value;
+            uploadedImage.style.transform = `scale(${zoomControl.value / 100}) translate(${horizontalPositionControl.value}px, ${verticalPositionControl.value}px)`;
         }
 
         function simulateDownload() {
             downloadButton.disabled = true;
             downloadButton.textContent = 'Preparing Download...';
 
-            // Simulate processing time
             setTimeout(() => {
-                html2canvas(imageContainer).then(canvas => {
+                const containerToCapture = document.getElementById('canvasWrapper');
+
+                html2canvas(containerToCapture, {
+                    useCORS: true, 
+                }).then(canvas => {
                     const link = document.createElement('a');
                     link.download = 'spinning_image.png';
                     link.href = canvas.toDataURL();
