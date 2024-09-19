@@ -1,1 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sleek Vinyl-Style Spinning Image Converter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #f6d5e5, #d4e5ff);
+            color: #5a5a5a;
+        }
+        .container {
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            color: #7c5295;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+        #imageContainer {
+            width: 300px;
+            height: 300px;
+            margin: 20px auto;
+            position: relative;
+            border: 10px solid #b8a3c8;
+            background-color: #b8a3c8;
+        }
+        #maskContainer {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            overflow: hidden;
+            border-radius: 50%;
+        }
+        #spinner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: none;
+        }
+        #uploadedImage {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        #centerDot {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 10px;
+            height: 10px;
+            background-color: #000000;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+        .custom-file-upload, button {
+            background: linear-gradient(90deg, #a788c8, #b8a3c8, #a788c8);
+            background-size: 200% 100%;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px 0;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: gradientShift 3s ease infinite;
+        }
+        .custom-file-upload:hover, button:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        button:disabled {
+            background: #d1c1e0;
+            cursor: not-allowed;
+        }
+        .control-group {
+            margin-top: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #7c5295;
+            font-weight: 600;
+        }
+        input[type="range"], input[type="color"] {
+            width: 100%;
+            max-width: 200px;
+            margin-bottom: 0.5rem;
+        }
+        input[type="color"] {
+            height: 40px;
+            border: none;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sleek Vinyl-Style Spinning Image Converter</h1>
+        <label class="custom-file-upload">
+            Choose an Image
+            <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+        </label>
+        <br>
+        <button id="toggleButton" disabled>Start Spinning</button>
+        <button id="downloadButton" disabled>Download Animation</button>
+        <div id="imageContainer">
+            <div id="maskContainer">
+                <div id="spinner">
+                    <img id="uploadedImage" alt="Uploaded image">
+                    <div id="centerDot"></div>
+                </div>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="speedControl">Spinning Speed:</label>
+            <input type="range" id="speedControl" min="1" max="10" value="5">
+        </div>
+        <div class="control-group">
+            <label for="borderColorControl">Border Color:</label>
+            <input type="color" id="borderColorControl" value="#b8a3c8">
+        </div>
+        <div class="control-group">
+            <label for="borderWidthControl">Border Width:</label>
+            <input type="range" id="borderWidthControl" min="0" max="50" value="10">
+        </div>
+        <div class="control-group">
+            <label for="centerDotSizeControl">Center Dot Size:</label>
+            <input type="range" id="centerDotSizeControl" min="1" max="50" value="10">
+        </div>
+        <div class="control-group">
+            <label for="centerDotColorControl">Center Dot Color:</label>
+            <input type="color" id="centerDotColorControl" value="#000000">
+        </div>
+        <div class="control-group">
+            <label for="zoomControl">Zoom:</label>
+            <input type="range" id="zoomControl" min="100" max="200" value="100">
+        </div>
+        <div class="control-group">
+            <label for="horizontalPositionControl">Horizontal Position:</label>
+            <input type="range" id="horizontalPositionControl" min="-50" max="50" value="0">
+        </div>
+        <div class="control-group">
+            <label for="verticalPositionControl">Vertical Position:</label>
+            <input type="range" id="verticalPositionControl" min="-50" max="50" value="0">
+        </div>
+    </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
+    <script>
+        const imageUpload = document.getElementById('imageUpload');
+        const toggleButton = document.getElementById('toggleButton');
+        const downloadButton = document.getElementById('downloadButton');
+        const uploadedImage = document.getElementById('uploadedImage');
+        const spinner = document.getElementById('spinner');
+        const speedControl = document.getElementById('speedControl');
+        const borderColorControl = document.getElementById('borderColorControl');
+        const borderWidthControl = document.getElementById('borderWidthControl');
+        const centerDotSizeControl = document.getElementById('centerDotSizeControl');
+        const centerDotColorControl = document.getElementById('centerDotColorControl');
+        const zoomControl = document.getElementById('zoomControl');
+        const horizontalPositionControl = document.getElementById('horizontalPositionControl');
+        const verticalPositionControl = document.getElementById('verticalPositionControl');
+        const imageContainer = document.getElementById('imageContainer');
+        const centerDot = document.getElementById('centerDot');
+
+        let isSpinning = false;
+
+        imageUpload.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedImage.src = e.target.result;
+                    spinner.style.display = 'block';
+                    toggleButton.disabled = false;
+                    downloadButton.disabled = false;
+                    updateSpinAnimation();
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        toggleButton.addEventListener('click', function() {
+            isSpinning = !isSpinning;
+            this.textContent = isSpinning ? 'Stop Spinning' : 'Start Spinning';
+            updateSpinAnimation();
+        });
+
+        downloadButton.addEventListener('click', simulateDownload);
+
+        speedControl.addEventListener('input', updateSpinAnimation);
+        borderColorControl.addEventListener('input', updateBorderColor);
+        borderWidthControl.addEventListener('input', updateBorderWidth);
+        centerDotSizeControl.addEventListener('input', updateCenterDot);
+        centerDotColorControl.addEventListener('input', updateCenterDot);
+        zoomControl.addEventListener('input', updateImageTransform);
+        horizontalPositionControl.addEventListener('input', updateImageTransform);
+        verticalPositionControl.addEventListener('input', updateImageTransform);
+
+        function updateSpinAnimation() {
+            const duration = 11 - speedControl.value; // Invert scale so higher value = faster
+            spinner.style.animation = isSpinning ? `spin ${duration}s linear infinite` : 'none';
+        }
+
+        function updateBorderColor() {
+            const color = borderColorControl.value;
+            imageContainer.style.borderColor = color;
+            imageContainer.style.backgroundColor = color;
+        }
+
+        function updateBorderWidth() {
+            const width = borderWidthControl.value;
+            imageContainer.style.borderWidth = `${width}px`;
+        }
+
+        function updateCenterDot() {
+            const size = centerDotSizeControl.value;
+            const color = centerDotColorControl.value;
+            centerDot.style.width = `${size}px`;
+            centerDot.style.height = `${size}px`;
+            centerDot.style.backgroundColor = color;
+        }
+
+        function updateImageTransform() {
+            const zoom = zoomControl.value;
+            const horizontalPosition = horizontalPositionControl.value;
+            const verticalPosition = verticalPositionControl.value;
+            uploadedImage.style.transform = `scale(${zoom / 100}) translate(${horizontalPosition}px, ${verticalPosition}px)`;
+        }
+
+        function simulateDownload() {
+            downloadButton.disabled = true;
+            downloadButton.textContent = 'Preparing Download...';
+
+            // Simulate processing time
+            setTimeout(() => {
+                html2canvas(imageContainer).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = 'spinning_image.png';
+                    link.href = canvas.toDataURL();
+                    link.click();
+
+                    downloadButton.textContent = 'Download Complete!';
+                    setTimeout(() => {
+                        downloadButton.textContent = 'Download Animation';
+                        downloadButton.disabled = false;
+                    }, 3000);
+                });
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
